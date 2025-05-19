@@ -12,6 +12,3 @@ export type Product = {
   createdAt?: string;
   updatedAt?: string;
 };
-
-// 01-Estruturas e Tratamento -
-// 04-Objetos -

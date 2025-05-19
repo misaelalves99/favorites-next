@@ -1,7 +1,5 @@
 // app/components/Wishlist.tsx
 
-// app/components/Wishlist.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -66,9 +64,3 @@ const Wishlist = () => {
 };
 
 export default Wishlist;
-
-
-// 01-Estruturas e Tratamento -
-// 03-Arrays -
-// 05-Formulários e Eventos -
-// 09-Renderização Condicional -

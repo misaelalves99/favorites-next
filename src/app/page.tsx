@@ -6,29 +6,26 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductList from "./components/ProductList";
 import { Product } from "./types/product";
+import { getProducts } from "./lib/api/products";
 import styles from "./HomePage.module.css";
 
 const HomePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
-  // 06-Hooks + 08-Api - Busca produtos ao montar componente
   useEffect(() => {
-    const fetchProducts = async () => {
+    const loadProducts = async () => {
       try {
-        const response = await fetch("/api/product");
-        if (!response.ok) throw new Error("Erro ao buscar produtos");
-        const data = await response.json();
+        const data = await getProducts();
         setProducts(data);
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao carregar produtos:", error);
       }
     };
 
-    fetchProducts();
+    loadProducts();
   }, []);
 
-  // 05-Formulários e Eventos - Handler de navegação
   const handleNavigate = () => {
     router.push("/products");
   };
@@ -42,8 +39,6 @@ const HomePage = () => {
           Ver Produtos
         </button>
       </section>
-
-      {/* 03-Arrays - Produtos em Destaque */}
       <section className={styles.featuredSection}>
         <h2 className={styles.sectionTitle}>Produtos em Destaque</h2>
         <ProductList products={products.slice(0, 6)} />
@@ -53,10 +48,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-// 01-Estruturas e Tratamento -
-// 03-Arrays -
-// 05-Formulários e Eventos -
-// 06-Hooks -
-// 08-Api -
-// 09-Renderização Condicional -

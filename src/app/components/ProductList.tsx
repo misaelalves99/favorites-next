@@ -1,63 +1,51 @@
 // app/components/ProductList.tsx
 
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Product } from "../types/product";
-import ProductCard from "./ProductCard";
-import { useProduct } from "../context/ProductContext";
-import styles from "./ProductList.module.css";
+import React, { useEffect, useState } from 'react';
+import { Product } from '../types/product';
+import ProductCard from './ProductCard';
+import { useProduct } from '../context/ProductContext';
+import { getProducts } from '../lib/api/products';
+import styles from './ProductList.module.css';
 
 interface ProductListProps {
   products?: Product[];
-  overrideProducts?: Product[];
 }
 
-const ProductList: React.FC<ProductListProps> = ({ overrideProducts = [] }) => {
-  const { products, setProducts } = useProduct();
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
+  const { products: contextProducts, setProducts } = useProduct();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchProducts = async (): Promise<Product[]> => {
-    try {
-      const res = await fetch("/api/products", { cache: "no-store" });
-      if (!res.ok) throw new Error("Erro ao buscar produtos");
-      return await res.json();
-    } catch (err) {
-      setError("Erro ao carregar produtos");
-      throw err;
-    }
-  };
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const load = async () => {
       try {
-        const base = overrideProducts.length
-          ? overrideProducts
-          : await fetchProducts();
-
-        setProducts(base);
+        if (!products || products.length === 0) {
+          const fetched = await getProducts();
+          setProducts(fetched);
+        } else {
+          setProducts(products);
+        }
       } catch (err) {
-        console.error("Erro ao carregar produtos:", err);
+        console.error('Erro ao carregar produtos:', err);
+        setError('Erro ao carregar produtos.');
       } finally {
         setLoading(false);
       }
     };
 
     load();
-  }, [overrideProducts]);
+  }, [products, setProducts]);
 
   if (loading) return <div className={styles.loading}>Carregando produtos...</div>;
   if (error) return <div className={styles.error}>{error}</div>;
-  if (!products.length) return <p className={styles.noProductsMessage}>Nenhum produto encontrado.</p>;
+  if (!contextProducts.length) return <p className={styles.noProductsMessage}>Nenhum produto encontrado.</p>;
 
   return (
     <div className={styles.productGrid}>
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-        />
+      {contextProducts.map((product) => (
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   );

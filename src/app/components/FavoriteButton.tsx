@@ -4,11 +4,11 @@
 
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-import { useWishlist } from "../context/WishlistContext"; // ✅ Importa o contexto correto
+import { useWishlist } from "../context/WishlistContext";
 import styles from "./FavoriteButton.module.css";
 
 const FavoriteButton: React.FC = () => {
-  const { wishlist } = useWishlist(); // ✅ Usa o estado correto do contexto
+  const { wishlist } = useWishlist();
 
   return (
     <div className={styles.button}>
